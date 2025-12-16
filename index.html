@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Furtiluna — trading education, structure, and innovation." />
+  <title>Furtiluna</title>
+
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" href="./assets/favicon.png" />
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="header" id="top">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="Furtiluna home">
+        <img class="brand__logo" src="./assets/furtiluna-logo.png" alt="Furtiluna" onerror="this.style.display='none'" />
+        <span class="brand__text">Furtiluna</span>
+      </a>
+
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="navLinks" data-nav-toggle>
+        <span class="nav__toggleBars" aria-hidden="true"></span>
+        <span class="sr-only">Menu</span>
+      </button>
+
+      <div class="nav__links" id="navLinks" data-nav-links>
+        <a href="#buy">Buy</a>
+        <a href="#path">Learning path</a>
+        <a href="#youtube">YouTube</a>
+        <a href="#socials">Socials</a>
+        <a href="#disclaimer">Disclaimer</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero section">
+      <div class="container hero__grid">
+        <div class="hero__copy reveal">
+          <p class="kicker">Education • Structure • Innovation</p>
+          <h1 class="hero__title">You don’t need another bot.</h1>
+          <p class="hero__subTitle">You need a system you understand and a strategy you can trust.</p>
+          <p class="hero__lead">
+            Furtiluna teaches practical, repeatable decision-making for traders who want clarity, structure, and responsible progress.
+          </p>
+
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#buy">View options</a>
+            <a class="btn btn--ghost" href="#youtube">Explore YouTube</a>
+          </div>
+
+          <div class="hero__meta">
+            <span class="pill">YouTube: @furtiluna</span>
+            <span class="pill">TikTok: tiktok.com/furtiluna</span>
+            <span class="pill">Telegram: t.me/furtiluna</span>
+          </div>
+        </div>
+
+        <div class="hero__media reveal">
+          <div class="mediaCard">
+            <img class="mediaCard__img" src="./assets/brand-hero.png" alt="Furtiluna brand artwork"
+                 onerror="this.closest('.mediaCard').classList.add('mediaCard--fallback')" />
+            <div class="mediaCard__fallback">
+              <div class="fallbackMark">F</div>
+              <div class="fallbackText">
+                <div class="fallbackTitle">Add your Looka branding</div>
+                <div class="fallbackSub">Put images in <code>./assets</code> (filenames below).</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="caption">
+            Save Looka images as:
+            <code>assets/furtiluna-logo.png</code>, <code>assets/brand-hero.png</code>, <code>assets/brand-1.png</code>, <code>assets/brand-2.png</code>, <code>assets/favicon.png</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="buy" class="section section--alt">
+      <div class="container">
+        <div class="centerHead reveal">
+          <h2 class="h2">Choose your access</h2>
+          <p class="lead">
+            Pick the option that fits your timeline. Start learning today with a clear, structured approach.
+          </p>
+        </div>
+
+        <div class="pricing">
+          <article class="priceCard reveal">
+            <div class="priceCard__top">
+              <div class="priceCard__icon" aria-hidden="true">★</div>
+              <h3 class="h3">90-day Access</h3>
+              <p class="muted">Full access</p>
+            </div>
+
+            <div class="price">
+              <span class="price__amount">€1500</span>
+              <span class="price__suffix">/ 90 days</span>
+            </div>
+
+            <ul class="list">
+              <li>90-day full course access</li>
+              <li>Learn at your own pace</li>
+              <li>Structured learning path</li>
+              <li>Risk-first trading habits</li>
+              <li>Support via Telegram community</li>
+            </ul>
+
+            <a class="btn btn--primary btn--wide" href="https://t.me/furtiluna" target="_blank" rel="noreferrer">
+              Start learning (Telegram)
+            </a>
+
+            <p class="finePrint">
+              Want checkout links here? Replace this button URL in <code>index.html</code>.
+            </p>
+          </article>
+
+          <article class="priceCard priceCard--featured reveal" aria-label="Most popular plan">
+            <div class="badge">Most Popular</div>
+
+            <div class="priceCard__top">
+              <div class="priceCard__icon" aria-hidden="true">∞</div>
+              <h3 class="h3">Lifetime Access</h3>
+              <p class="muted">Ultimate access</p>
+            </div>
+
+            <div class="price">
+              <span class="price__amount">€2500</span>
+              <span class="price__suffix">/ lifetime</span>
+            </div>
+
+            <ul class="list">
+              <li>Lifetime full course access</li>
+              <li>Lifetime updates &amp; new content</li>
+              <li>Learn at your own pace</li>
+              <li>System-based decision-making</li>
+              <li>Support via Telegram community</li>
+            </ul>
+
+            <a class="btn btn--primary btn--wide" href="https://t.me/furtiluna" target="_blank" rel="noreferrer">
+              Start learning (Telegram)
+            </a>
+
+            <p class="finePrint">
+              Want Stripe/PayPal? Swap the link in <code>index.html</code>.
+            </p>
+          </article>
+        </div>
+
+        <p class="note reveal">
+          Educational content only. Trading involves risk. See full disclaimer below.
+        </p>
+      </div>
+    </section>
+
+    <section id="path" class="section">
+      <div class="container">
+        <div class="centerHead reveal">
+          <h2 class="h2">Your learning path</h2>
+          <p class="lead">A structured route from fundamentals to systematic thinking and automation.</p>
+        </div>
+
+        <div class="pathGrid">
+          <div class="pathMedia reveal">
+            <img class="pathImg" src="./assets/learning-path.png" alt="Learning path graphic"
+                 onerror="this.style.display='none'" />
+            <div class="pathFallback">
+              <strong>Optional:</strong> add a graphic as <code>assets/learning-path.png</code>.
+            </div>
+          </div>
+
+          <div class="pathList reveal">
+            <div class="pathItem"><span class="pathNum">01</span><div><div class="pathTitle">Introduction</div><div class="pathSub">Forex, automation, and what “system” really means.</div></div></div>
+            <div class="pathItem"><span class="pathNum">02</span><div><div class="pathTitle">Mindset</div><div class="pathSub">Discipline, process, expectations, consistency.</div></div></div>
+            <div class="pathItem"><span class="pathNum">03</span><div><div class="pathTitle">Forex basics</div><div class="pathSub">Market mechanics, sessions, spreads, execution.</div></div></div>
+            <div class="pathItem"><span class="pathNum">04</span><div><div class="pathTitle">Technical basics</div><div class="pathSub">Structure, levels, rules, and repeatability.</div></div></div>
+            <div class="pathItem"><span class="pathNum">05</span><div><div class="pathTitle">Accounts setup</div><div class="pathSub">Demo vs live, brokers, platform essentials.</div></div></div>
+            <div class="pathItem"><span class="pathNum">06</span><div><div class="pathTitle">IT setup</div><div class="pathSub">Tools, installation, and safe configuration.</div></div></div>
+            <div class="pathItem"><span class="pathNum">07</span><div><div class="pathTitle">Automation software</div><div class="pathSub">Installing, verifying, monitoring.</div></div></div>
+            <div class="pathItem"><span class="pathNum">08</span><div><div class="pathTitle">Risk mitigation</div><div class="pathSub">Position sizing, guardrails, drawdown control.</div></div></div>
+            <div class="pathItem"><span class="pathNum">09</span><div><div class="pathTitle">Backtesting</div><div class="pathSub">Testing correctly and avoiding false confidence.</div></div></div>
+            <div class="pathItem"><span class="pathNum">10</span><div><div class="pathTitle">Researching tools</div><div class="pathSub">How to evaluate systems and software responsibly.</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="youtube" class="section section--alt">
+      <div class="container">
+        <div class="split">
+          <div class="split__copy reveal">
+            <h2 class="h2">Furtiluna YouTube channel</h2>
+
+            <div class="prose">
+              <p>
+                Welcome to the Furtiluna YouTube channel, a dedicated space for traders who want to develop their skills through education, structure, and innovation. This channel is led by the founder of Furtiluna and is designed to support traders at every stage of their journey, from beginners learning the fundamentals to experienced traders exploring automated and algorithmic trading solutions.
+              </p>
+              <p>
+                Our content focuses on practical and actionable insights that help you move your trading forward in a responsible and sustainable way. You will find demonstrations of algorithmic trading results generated using our custom-built Expert Advisors, along with clear explanations of how automated trading systems function in real-world conditions. We also place strong emphasis on essential topics such as risk management, position sizing, trading psychology, and discipline—key components for long-term consistency in the financial markets.
+              </p>
+              <p>
+                In addition to automation, the channel covers broader trading education, including market behaviour, system-based decision-making, and mindset development. Whether your goal is to understand the basics of trading or to evaluate systematic and algorithm-driven approaches, our videos aim to provide structured knowledge without unrealistic promises or hype.
+              </p>
+              <p>
+                By subscribing to the Furtiluna channel, you gain access to educational tools and insights intended to help you navigate the financial markets with clarity and integrity. Our mission is to promote informed decision-making, realistic expectations, and long-term growth rather than short-term speculation.
+              </p>
+            </div>
+
+            <div class="actions">
+              <a class="btn btn--primary" href="https://youtube.com/@furtiluna" target="_blank" rel="noreferrer">Open YouTube</a>
+              <a class="btn btn--ghost" href="#buy">View buy options</a>
+            </div>
+          </div>
+
+          <div class="split__media reveal">
+            <div class="grid2">
+              <div class="tile">
+                <img src="./assets/brand-1.png" alt="Furtiluna brand graphic" onerror="this.style.display='none'" />
+                <div class="tile__label">Systems</div>
+              </div>
+              <div class="tile">
+                <img src="./assets/brand-2.png" alt="Furtiluna brand graphic" onerror="this.style.display='none'" />
+                <div class="tile__label">Risk</div>
+              </div>
+            </div>
+            <p class="caption">Add Looka images for a fully branded feel.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="socials" class="section">
+      <div class="container">
+        <div class="centerHead reveal">
+          <h2 class="h2">Socials</h2>
+          <p class="lead">TikTok, Telegram, and YouTube — all named <strong>furtiluna</strong>.</p>
+        </div>
+
+        <div class="socialGrid">
+          <a class="social reveal" href="https://www.tiktok.com/@furtiluna" target="_blank" rel="noreferrer">
+            <div class="social__title">TikTok</div>
+            <div class="social__url">tiktok.com/furtiluna</div>
+          </a>
+
+          <a class="social reveal" href="https://t.me/furtiluna" target="_blank" rel="noreferrer">
+            <div class="social__title">Telegram</div>
+            <div class="social__url">t.me/furtiluna</div>
+          </a>
+
+          <a class="social reveal" href="https://youtube.com/@furtiluna" target="_blank" rel="noreferrer">
+            <div class="social__title">YouTube</div>
+            <div class="social__url">youtube.com/@furtiluna</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="disclaimer" class="section section--alt">
+      <div class="container narrow">
+        <h2 class="h2 reveal">Disclaimer</h2>
+        <div class="prose reveal">
+          <p>
+            All information provided on this channel is for educational purposes only and does not constitute financial, investment, or trading advice. Any trading results shown are based on simulated or demo accounts and should not be interpreted as actual profits or used for tax purposes. Trading financial instruments involves risk, and past or simulated performance is not indicative of future results.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer__row">
+        <div class="footer__left">
+          <div class="footer__brand">Furtiluna</div>
+          <div class="footer__small">Education • Structure • Innovation</div>
+        </div>
+        <div class="footer__right">
+          <a href="#top">Back to top</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
