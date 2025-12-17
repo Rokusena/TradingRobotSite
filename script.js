@@ -30,4 +30,18 @@
   } else {
     revealEls.forEach((el) => el.classList.add("is-visible"));
   }
+
+  // FAQ: keep only one item open at a time
+  const faqRoot = document.querySelector("[data-faq]");
+  if (faqRoot) {
+    const items = Array.from(faqRoot.querySelectorAll("details"));
+    items.forEach((item) => {
+      item.addEventListener("toggle", () => {
+        if (!item.open) return;
+        items.forEach((other) => {
+          if (other !== item) other.open = false;
+        });
+      });
+    });
+  }
 })();
