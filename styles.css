@@ -405,11 +405,9 @@ code{
 .footer__small{color:var(--muted2); font-size:12px}
 
 .reveal{
-  opacity:0;
-  transform: translateY(10px);
-  transition: opacity .55s ease, transform .55s ease;
+  opacity:1;
+  transform:none;
 }
-.reveal.is-visible{opacity:1; transform: translateY(0)}
 
 .faq{margin-top:18px; display:grid; gap:12px}
 
@@ -514,10 +512,7 @@ code{
 
 .hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0}
 
-.turnstileWrap{
-  display:flex;
-  justify-content:flex-start;
-}
+
 
 @media (max-width: 980px){
   .hero__grid{grid-template-columns:1fr; gap:22px}
