@@ -296,10 +296,12 @@ code{
 .pathGrid{
   margin-top:18px;
   display:grid;
-  grid-template-columns: .95fr 1.05fr;
+  grid-template-columns: 1fr;
   gap:18px;
   align-items:start;
+  justify-items:center;
 }
+
 .pathMedia{
   border-radius: var(--radius2);
   border:1px solid var(--line);
@@ -311,6 +313,7 @@ code{
 .pathFallback{padding:16px; color:var(--muted2); font-size:13px}
 
 .pathList{
+  width: min(100%, 920px);
   border-radius: var(--radius2);
   border:1px solid var(--line);
   background: rgba(255,255,255,.85);
@@ -462,6 +465,54 @@ code{
 .faqA{padding:0 16px 16px; color: rgba(15,23,32,.78)}
 .faqA p{margin:0 0 10px}
 .faqA p:last-child{margin:0}
+
+.toolCard{
+  border-radius: var(--radius2);
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.85);
+  box-shadow: var(--shadow);
+  padding:16px;
+}
+.section{ scroll-margin-top: 86px; }
+
+.contactForm{display:grid; gap:14px; margin-top:18px}
+
+.field{display:grid; gap:6px}
+.field label{font-size:13px; color:rgba(15,23,32,.78); font-weight:650}
+
+.field input,
+.field textarea{
+  width:100%;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.88);
+  box-shadow: var(--shadow);
+  padding:12px 12px;
+  font: inherit;
+  outline:none;
+}
+
+.field textarea{resize:vertical; min-height:140px}
+
+.captcha{
+  border-radius: var(--radius2);
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.55);
+  padding:14px;
+  display:grid;
+  gap:12px;
+}
+
+.captchaRow{display:flex; align-items:center; justify-content:space-between; gap:12px}
+.captchaQ{color:rgba(15,23,32,.82); font-size:13px}
+
+.checkRow{display:flex; align-items:center; gap:10px}
+.checkRow input{width:18px; height:18px; box-shadow:none}
+
+.formActions{display:flex; gap:12px; flex-wrap:wrap}
+.formMsg{margin:0; color:rgba(15,23,32,.75); font-size:13px}
+
+.hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0}
 
 @media (max-width: 980px){
   .hero__grid{grid-template-columns:1fr; gap:22px}

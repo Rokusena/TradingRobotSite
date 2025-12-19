@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Contact Furtiluna." />
+  <title>Furtiluna — Contact</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" href="./assets/favicon.png" />
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="header" id="top">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="./index.html#top" aria-label="Furtiluna home">
+        <img class="brand__logo" src="./assets/furtiluna-logo.png" alt="Furtiluna" onerror="this.style.display='none'" />
+        <span class="brand__text">Furtiluna</span>
+      </a>
+
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="navLinks" data-nav-toggle>
+        <span class="nav__toggleBars" aria-hidden="true"></span>
+        <span class="sr-only">Menu</span>
+      </button>
+
+      <div class="nav__links" id="navLinks" data-nav-links>
+        <a href="./index.html#buy">Buy</a>
+        <a href="./index.html#youtube">YouTube</a>
+        <a href="./index.html#socials">Socials</a>
+        <a href="./recommendations.html">Recommendations</a>
+        <a href="./contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="section">
+      <div class="container narrow">
+        <h1 class="h2 reveal">Contact</h1>
+        <p class="lead reveal">Send a message and we’ll get back to you.</p>
+
+        <form class="contactForm reveal" data-contact-form data-contact-to="Hello@furtiluna.com ">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" required />
+          </div>
+
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="6" required></textarea>
+          </div>
+
+          <div class="captcha">
+            <div class="captchaRow">
+              <div class="captchaQ">
+                <strong>Quick check:</strong> <span data-captcha-q></span>
+              </div>
+              <button class="btn btn--ghost" type="button" data-captcha-refresh>New</button>
+            </div>
+
+            <div class="field">
+              <label for="captchaAnswer">Answer</label>
+              <input id="captchaAnswer" name="captchaAnswer" inputmode="numeric" required />
+            </div>
+
+            <div class="field checkRow">
+              <input id="notRobot" name="notRobot" type="checkbox" required />
+              <label for="notRobot">I’m not a robot</label>
+            </div>
+
+            <!-- Honeypot (bots fill this, humans won't) -->
+            <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          </div>
+
+          <div class="formActions">
+            <button class="btn btn--primary" type="submit">Send</button>
+            <a class="btn btn--ghost" href="./index.html#top">Back to site</a>
+          </div>
+
+          <p class="finePrint">
+            Replace <code>furtiluna@example.com</code> in <code>contact.html</code> with your real email.
+          </p>
+
+          <p class="formMsg" data-form-msg role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer__row">
+        <div class="footer__left">
+          <div class="footer__brand">Furtiluna</div>
+          <div class="footer__small">Education • Structure • Innovation</div>
+        </div>
+        <div class="footer__right">
+          <a href="#top" data-back-to-top>Back to top</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
