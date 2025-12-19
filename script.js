@@ -54,67 +54,58 @@
     });
   }
 
-  // Contact page: simple math check + mailto submit (front-end only)
+  // Contact page: submit to Vercel API (/api/contact)
   const contactForm = document.querySelector("[data-contact-form]");
   if (contactForm) {
-    const qEl = contactForm.querySelector("[data-captcha-q]");
-    const refreshBtn = contactForm.querySelector("[data-captcha-refresh]");
     const msgEl = contactForm.querySelector("[data-form-msg]");
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
 
-    let a = 0,
-      b = 0;
-
-    const newCaptcha = () => {
-      a = Math.floor(Math.random() * 8) + 2; // 2..9
-      b = Math.floor(Math.random() * 8) + 2; // 2..9
-      if (qEl) qEl.textContent = `${a} + ${b} = ?`;
-      const ans = contactForm.querySelector("#captchaAnswer");
-      if (ans) ans.value = "";
-      if (msgEl) msgEl.textContent = "";
+    const setMsg = (text) => {
+      if (msgEl) msgEl.textContent = text;
     };
 
-    refreshBtn?.addEventListener("click", newCaptcha);
-    newCaptcha();
-
-    contactForm.addEventListener("submit", (e) => {
+    contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const email = contactForm.querySelector("#email")?.value?.trim() ?? "";
       const phone = contactForm.querySelector("#phone")?.value?.trim() ?? "";
       const message = contactForm.querySelector("#message")?.value?.trim() ?? "";
-      const notRobot = contactForm.querySelector("#notRobot")?.checked ?? false;
-      const captchaAnswer = contactForm.querySelector("#captchaAnswer")?.value?.trim() ?? "";
-      const honey = contactForm.querySelector('input[name="company"]')?.value?.trim() ?? "";
-
-      if (honey) return; // bot
-
-      const expected = a + b;
-      const got = Number(captchaAnswer);
+      const company = contactForm.querySelector('input[name="company"]')?.value?.trim() ?? "";
+      const turnstileToken =
+        contactForm.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() ?? "";
 
       if (!email || !phone || !message) {
-        if (msgEl) msgEl.textContent = "Please fill in email, phone, and message.";
-        return;
-      }
-      if (!notRobot) {
-        if (msgEl) msgEl.textContent = "Please confirm you’re not a robot.";
-        return;
-      }
-      if (!Number.isFinite(got) || got !== expected) {
-        if (msgEl) msgEl.textContent = "Captcha answer is incorrect. Try again.";
-        newCaptcha();
+        setMsg("Please fill in email, phone, and message.");
         return;
       }
 
-      const toEmail = contactForm.getAttribute("data-contact-to") || "furtiluna@example.com";
-      const subject = encodeURIComponent("Furtiluna contact request");
-      const body = encodeURIComponent(
-        `Email: ${email}\nPhone: ${phone}\n\nMessage:\n${message}\n`
-      );
+      submitBtn && (submitBtn.disabled = true);
+      setMsg("Sending…");
 
-      window.location.href = `mailto:${toEmail}?subject=${subject}&body=${body}`;
-      if (msgEl) msgEl.textContent = "Opening your email app…";
-      contactForm.reset();
-      newCaptcha();
+      try {
+        const resp = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, phone, message, company, turnstileToken }),
+        });
+
+        const data = await resp.json().catch(() => null);
+
+        if (!resp.ok || !data?.ok) {
+          setMsg("Send failed. Please try again later.");
+          submitBtn && (submitBtn.disabled = false);
+          return;
+        }
+
+        setMsg("Message sent. Thank you!");
+        contactForm.reset();
+        submitBtn && (submitBtn.disabled = false);
+      } catch {
+        setMsg("Send failed (offline?). Please try again later.");
+        submitBtn && (submitBtn.disabled = false);
+      }
     });
   }
 })();
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
