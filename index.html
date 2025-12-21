@@ -107,8 +107,8 @@
               <li>Support via Telegram community</li>
             </ul>
 
-            <a class="btn btn--primary btn--wide" href="https://t.me/furtiluna" target="_blank" rel="noreferrer">
-              Start learning (Telegram)
+            <a class="btn btn--primary btn--wide" href="#" data-apply-open data-plan="90-day Access">
+              Apply & book a meeting
             </a>
 
             <p class="finePrint">
@@ -138,8 +138,8 @@
               <li>Support via Telegram community</li>
             </ul>
 
-            <a class="btn btn--primary btn--wide" href="https://t.me/furtiluna" target="_blank" rel="noreferrer">
-              Start learning (Telegram)
+            <a class="btn btn--primary btn--wide" href="#" data-apply-open data-plan="Lifetime Access">
+              Apply & book a meeting
             </a>
 
             <p class="finePrint">
@@ -402,6 +402,216 @@
       </div>
     </footer>
   </main>
+
+  <!-- Application / Booking modal -->
+  <div class="modal" data-apply-modal aria-hidden="true">
+    <div class="modal__backdrop" data-apply-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="applyTitle">
+      <div class="modal__head">
+        <div>
+          <div class="modal__kicker">Furtiluna</div>
+          <h2 class="modal__title" id="applyTitle">Application</h2>
+          <p class="modal__sub" data-apply-planText>Selected: —</p>
+        </div>
+        <button class="iconBtn" type="button" aria-label="Close" data-apply-close>✕</button>
+      </div>
+
+      <div class="modal__body">
+        <!-- Step 1: Questions -->
+        <section class="step" data-apply-step="questions">
+          <form class="form" data-apply-form>
+            <h3 class="form__title">1) Background & Experience</h3>
+
+            <div class="field">
+              <label for="bg">What best describes your current professional background?</label>
+              <select id="bg" name="background" required>
+                <option value="" selected disabled>Select one</option>
+                <option>Business Owner</option>
+                <option>Executive</option>
+                <option>C-Level / Founder</option>
+                <option>Management</option>
+                <option>Medical / Healthcare Professional</option>
+                <option>Retail</option>
+                <option>Warehouse / Factory</option>
+                <option>Education</option>
+                <option>Sales</option>
+                <option>Software / IT</option>
+                <option>Engineering</option>
+                <option>Marketing</option>
+                <option>Driver / Gig Economy (Uber, etc.)</option>
+                <option>Currently Unemployed / No Income</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="exp">How long have you been involved in trading or investing?</label>
+              <select id="exp" name="experience" required>
+                <option value="" selected disabled>Select one</option>
+                <option value="none">No prior experience</option>
+                <option value="lt1">Less than 1 year</option>
+                <option value="1">Around 1 year</option>
+                <option value="2-3">2–3 years</option>
+                <option value=">3">More than 3 years</option>
+              </select>
+            </div>
+
+            <h3 class="form__title">2) Trading History & Knowledge</h3>
+            <div class="field">
+              <label for="approach">What types of trading or investing approaches have you used so far? (briefly)</label>
+              <textarea id="approach" name="approach" rows="3" placeholder="Example: discretionary, swing, scalping, algo/EA, long-term investing..."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="education">Have you previously invested in any trading education, courses, or mentorships? If yes, which ones?</label>
+              <textarea id="education" name="priorEducation" rows="3" placeholder="Optional"></textarea>
+            </div>
+
+            <h3 class="form__title">3) Challenges & Pain Points</h3>
+            <fieldset class="checks" aria-label="Challenges">
+              <label class="check"><input type="checkbox" name="challenges" value="profit" /> I struggle to stay consistently profitable</label>
+              <label class="check"><input type="checkbox" name="challenges" value="time" /> I don’t have enough time to monitor the markets</label>
+              <label class="check"><input type="checkbox" name="challenges" value="discipline" /> Discipline and emotional control are difficult for me</label>
+              <label class="check"><input type="checkbox" name="challenges" value="losses" /> I’ve experienced significant losses</label>
+              <label class="check"><input type="checkbox" name="challenges" value="doubt" /> I often doubt whether trading is right for me</label>
+              <label class="check"><input type="checkbox" name="challenges" value="capital" /> My capital feels too limited to generate meaningful results</label>
+              <label class="check"><input type="checkbox" name="challenges" value="stress" /> Trading causes me stress, anxiety, or frustration</label>
+              <label class="check"><input type="checkbox" name="challenges" value="strategy" /> I lack a clear and repeatable strategy</label>
+              <label class="check"><input type="checkbox" name="challenges" value="market" /> I don’t fully understand how the market operates</label>
+              <label class="check"><input type="checkbox" name="challenges" value="mentors" /> I’ve had negative experiences with past mentors or educators</label>
+            </fieldset>
+
+            <h3 class="form__title">4) Goals & Commitment</h3>
+            <div class="field">
+              <label for="goals">What are your trading or investing goals over the next 12–24 months?</label>
+              <textarea id="goals" name="goals" rows="3" required placeholder="Be specific."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="motivation">How motivated are you right now to become a successful trader?</label>
+              <div class="range">
+                <input id="motivation" name="motivation" type="range" min="1" max="10" step="1" value="7" />
+                <div class="range__value" data-range-value>7 / 10</div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="timeline">When are you realistically looking to become consistently profitable?</label>
+              <select id="timeline" name="timeline" required>
+                <option value="" selected disabled>Select one</option>
+                <option>I’m ready to start immediately</option>
+                <option>I need a bit more clarity, then I’m ready</option>
+                <option>Within the next week</option>
+                <option>Within the next month</option>
+                <option>I’m only exploring and not ready to commit yet</option>
+              </select>
+            </div>
+
+            <h3 class="form__title">5) Financial Context</h3>
+            <div class="field">
+              <label for="income">What is your approximate total monthly income from all sources?</label>
+              <select id="income" name="income" required>
+                <option value="" selected disabled>Select one</option>
+                <option value="0-1k">$0 – $1,000</option>
+                <option value="1-2k">$1,000 – $2,000</option>
+                <option value="2-3k">$2,000 – $3,000</option>
+                <option value="3-6k">$3,000 – $6,000</option>
+                <option value="6-8k">$6,000 – $8,000</option>
+                <option value="8-10k">$8,000 – $10,000</option>
+                <option value="10k+">$10,000+</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="replace">How much would you need to earn from trading to replace your current income?</label>
+              <textarea id="replace" name="replaceIncome" rows="2" placeholder="Optional"></textarea>
+            </div>
+
+            <h3 class="form__title">6) Investment Readiness</h3>
+            <div class="field">
+              <label for="ready">Do you currently have the ability to invest in professional trading education or mentorship (4-figure investment)?</label>
+              <select id="ready" name="readiness" required>
+                <option value="" selected disabled>Select one</option>
+                <option>Yes, I’m able to invest in my growth</option>
+                <option>I could arrange the resources if needed</option>
+                <option>I’m generally hesitant about investing in myself</option>
+                <option>I’m not in a position to invest at this time</option>
+              </select>
+            </div>
+
+            <h3 class="form__title">7) Your WHY</h3>
+            <div class="field">
+              <label for="why">Why does learning to trade effectively matter to you right now rather than earlier or later?</label>
+              <textarea id="why" name="why" rows="4" required placeholder="This section carries the most weight in your application."></textarea>
+            </div>
+
+            <p class="form__note">
+              To ensure a good fit, some applicants will be invited to book a quick call.
+            </p>
+
+            <div class="form__actions">
+              <button class="btn btn--primary" type="submit">Continue</button>
+              <button class="btn btn--ghost" type="button" data-apply-close>Cancel</button>
+            </div>
+
+            <p class="form__msg" data-apply-msg role="status" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <!-- Step 2: Booking -->
+        <section class="step" data-apply-step="booking" hidden>
+          <h3 class="form__title">Book your meeting</h3>
+          <p class="form__note">
+            You’re qualified to book. If you haven’t set a booking calendar yet, add your Calendly/Google booking link in <code>script.js</code>.
+          </p>
+
+          <div class="book" data-book>
+            <a class="btn btn--primary" data-book-link href="#" target="_blank" rel="noreferrer" hidden>
+              Open booking calendar
+            </a>
+            <div class="book__empty" data-book-empty>
+              Booking link is not configured yet.
+              <div class="book__small">Set <code>BOOKING_URL</code> in <code>script.js</code>.</div>
+            </div>
+          </div>
+
+          <div class="form__actions">
+            <button class="btn btn--ghost" type="button" data-apply-back>Back</button>
+            <button class="btn btn--ghost" type="button" data-apply-close>Close</button>
+          </div>
+        </section>
+
+        <!-- Step 3: Lead capture (not qualified for booking yet) -->
+        <section class="step" data-apply-step="lead" hidden>
+          <h3 class="form__title">We’ll get in touch</h3>
+          <p class="form__note">Leave your details and we’ll reach out with next steps.</p>
+
+          <form class="form" data-lead-form>
+            <div class="field">
+              <label for="leadName">Name</label>
+              <input id="leadName" name="name" type="text" autocomplete="name" required />
+            </div>
+
+            <div class="field">
+              <label for="leadEmail">Email</label>
+              <input id="leadEmail" name="email" type="email" autocomplete="email" required />
+            </div>
+
+            <div class="field">
+              <label for="leadPhone">Phone</label>
+              <input id="leadPhone" name="phone" type="tel" autocomplete="tel" required />
+            </div>
+
+            <div class="form__actions">
+              <button class="btn btn--primary" type="submit">Submit</button>
+              <button class="btn btn--ghost" type="button" data-apply-back>Back</button>
+            </div>
+
+            <p class="form__msg" data-lead-msg role="status" aria-live="polite"></p>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
 
   <script src="./script.js"></script>
 </body>

@@ -54,7 +54,7 @@ code{
 .container{width:min(100% - 48px, var(--container)); margin:0 auto}
 .narrow{width:min(100% - 48px, 820px)}
 
-.section{padding:84px 0}
+.section{padding:84px 0; scroll-margin-top: 88px;}
 .section--alt{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(255,255,255,.55)}
 
 .header{
@@ -62,6 +62,13 @@ code{
   backdrop-filter: blur(10px);
   background: rgba(244,246,248,.70);
   border-bottom:1px solid var(--line);
+  transition: backdrop-filter .25s ease, background .25s ease;
+}
+
+/* Unblur header after scroll */
+body.is-scrolled .header{
+  backdrop-filter: none;
+  background: rgba(244,246,248,.92);
 }
 
 .nav{
@@ -404,10 +411,92 @@ code{
 .footer__brand{font-weight:850; letter-spacing:.8px; text-transform:uppercase; font-size:12px}
 .footer__small{color:var(--muted2); font-size:12px}
 
-.reveal{
-  opacity:1;
-  transform:none;
+/* Reveal animation: only hide when JS is running (prevents "blank page" if script fails) */
+.reveal{opacity:1; transform:none}
+.js .reveal{
+  opacity:0;
+  transform: translateY(10px);
+  transition: opacity .55s ease, transform .55s ease;
 }
+.js .reveal.is-visible{opacity:1; transform: translateY(0)}
+
+/* Application modal */
+.modal{position:fixed; inset:0; display:none; z-index:1000}
+.modal.is-open{display:block}
+.modal__backdrop{position:absolute; inset:0; background:rgba(15,23,32,.55)}
+.modal__panel{
+  position:relative;
+  width:min(calc(100% - 36px), 940px);
+  margin: 24px auto;
+  max-height: calc(100vh - 48px);
+  overflow:hidden;
+  border-radius: var(--radius2);
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 30px 90px rgba(0,0,0,.22);
+}
+.modal__head{
+  padding:16px 16px 12px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  border-bottom:1px solid rgba(15,23,32,.10);
+}
+.modal__kicker{font-size:12px; letter-spacing:1.6px; text-transform:uppercase; color:var(--muted2)}
+.modal__title{margin:4px 0 0; font-size:22px; letter-spacing:-.2px}
+.modal__sub{margin:6px 0 0; color:var(--muted2); font-size:13px}
+.modal__body{padding:16px; overflow:auto; max-height: calc(100vh - 140px)}
+
+.iconBtn{
+  width:42px; height:42px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.85);
+  cursor:pointer;
+}
+
+.form{display:grid; gap:14px}
+.form__title{margin:12px 0 0; font-size:16px; letter-spacing:-.15px}
+.form__note{margin:0; color:var(--muted2); font-size:13px}
+.form__actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:6px}
+.form__msg{margin:0; color:rgba(15,23,32,.78); font-size:13px}
+
+.field{display:grid; gap:6px}
+.field label{font-size:13px; color:rgba(15,23,32,.78); font-weight:650}
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.88);
+  box-shadow: var(--shadow);
+  padding:12px 12px;
+  font: inherit;
+  outline:none;
+}
+.field textarea{resize:vertical}
+
+.checks{border:0; padding:0; margin:0; display:grid; gap:10px}
+.check{display:flex; gap:10px; align-items:flex-start; color:rgba(15,23,32,.82); font-size:14px}
+.check input{margin-top:3px}
+
+.range{display:flex; align-items:center; justify-content:space-between; gap:14px}
+.range input{width:100%}
+.range__value{min-width:74px; text-align:right; color:var(--muted2); font-size:13px}
+
+.book{
+  border-radius: var(--radius2);
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.85);
+  box-shadow: var(--shadow);
+  padding:16px;
+  display:grid;
+  gap:12px;
+}
+.book__empty{color:rgba(15,23,32,.82)}
+.book__small{margin-top:6px; color:var(--muted2); font-size:12px}
 
 .faq{margin-top:18px; display:grid; gap:12px}
 
