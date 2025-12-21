@@ -49,6 +49,11 @@
   const backBtn = document.querySelector("[data-apply-back]");
   const bookLink = document.querySelector("[data-book-link]");
   const bookEmpty = document.querySelector("[data-book-empty]");
+  const wizPages = form ? Array.from(form.querySelectorAll("[data-apply-page]")) : [];
+  const wizBack = modal?.querySelector("[data-wiz-back]") ?? null;
+  const wizNext = modal?.querySelector("[data-wiz-next]") ?? null;
+  const wizStepLabel = modal?.querySelector("[data-wiz-step]") ?? null;
+  let wizIndex = 0;
 
   const setMsg = (text) => {
     if (msg) msg.textContent = text;
@@ -69,6 +74,9 @@
     showStep("questions");
     setMsg("");
     if (planText) planText.textContent = `Selected: ${plan || "—"}`;
+    if (form) form.reset();
+    wizIndex = 0;
+    renderWizard();
     const closeBtn = modal.querySelector("[data-apply-close]");
     if (closeBtn && typeof closeBtn.focus === "function") closeBtn.focus();
   };
@@ -203,9 +211,40 @@
   };
   setupBookingLink();
 
-  form?.addEventListener("submit", (e) => {
-    e.preventDefault();
+  const validateCurrentPage = () => {
+    if (!form || wizPages.length === 0) return true;
+    const page = wizPages[wizIndex];
+    if (!page) return true;
+
+    const requiredEls = Array.from(page.querySelectorAll("select[required], textarea[required], input[required]"));
+    for (const el of requiredEls) {
+      if (typeof el.reportValidity === "function" && !el.checkValidity()) {
+        el.reportValidity();
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const renderWizard = () => {
+    if (wizPages.length === 0) return;
+    wizPages.forEach((p, idx) => {
+      p.hidden = idx !== wizIndex;
+    });
+
+    if (wizStepLabel) {
+      wizStepLabel.textContent = `Step ${wizIndex + 1} of ${wizPages.length}`;
+    }
+
+    if (wizBack) wizBack.disabled = wizIndex === 0;
+    if (wizNext) {
+      wizNext.textContent = wizIndex === wizPages.length - 1 ? "Continue" : "Next";
+    }
     setMsg("");
+  };
+
+  const finishApplication = () => {
+    if (!form) return;
 
     const income = form.querySelector("#income")?.value || "";
     const experience = form.querySelector("#exp")?.value || "";
@@ -220,9 +259,6 @@
       return;
     }
 
-    // Qualification rules:
-    // - income must be above $6k (6-8k, 8-10k, 10k+)
-    // - must have prior trading/investing experience (not 'No prior experience')
     const incomeOk = income === "6-8k" || income === "8-10k" || income === "10k+";
     const experienceOk = experience !== "none";
 
@@ -234,6 +270,27 @@
 
     showStep("booking");
     setupBookingLink();
+  };
+
+  wizBack?.addEventListener("click", () => {
+    if (wizIndex <= 0) return;
+    wizIndex -= 1;
+    renderWizard();
+  });
+
+  wizNext?.addEventListener("click", () => {
+    if (!validateCurrentPage()) return;
+    if (wizIndex >= wizPages.length - 1) {
+      finishApplication();
+      return;
+    }
+    wizIndex += 1;
+    renderWizard();
+  });
+
+  // Prevent default form submit (we use the wizard buttons)
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
   });
 
   // FAQ: keep only one item open at a time

@@ -432,7 +432,7 @@ body.is-scrolled .header{
   overflow:hidden;
   border-radius: var(--radius2);
   border:1px solid var(--line);
-  background: rgba(255,255,255,.95);
+  background: #ffffff;
   box-shadow: 0 30px 90px rgba(0,0,0,.22);
 }
 .modal__head{
@@ -446,7 +446,15 @@ body.is-scrolled .header{
 .modal__kicker{font-size:12px; letter-spacing:1.6px; text-transform:uppercase; color:var(--muted2)}
 .modal__title{margin:4px 0 0; font-size:22px; letter-spacing:-.2px}
 .modal__sub{margin:6px 0 0; color:var(--muted2); font-size:13px}
-.modal__body{padding:16px; overflow:auto; max-height: calc(100vh - 140px)}
+.modal__body{padding:16px; overflow:auto; max-height: calc(100vh - 140px); background:#ffffff}
+
+/* Stronger backdrop to avoid distractions behind */
+.modal__backdrop{background:rgba(15,23,32,.70)}
+
+/* Ensure modal fields are fully opaque */
+.modal__panel .field input,
+.modal__panel .field select,
+.modal__panel .field textarea{background:#ffffff}
 
 .iconBtn{
   width:42px; height:42px;
@@ -462,8 +470,12 @@ body.is-scrolled .header{
 .form__actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:6px}
 .form__msg{margin:0; color:rgba(15,23,32,.78); font-size:13px}
 
+.wizard{display:grid; gap:12px}
+.wizard__top{display:flex; align-items:center; justify-content:space-between}
+.wizard__step{color:var(--muted2); font-size:12px}
+
 .field{display:grid; gap:6px}
-.field label{font-size:13px; color:rgba(15,23,32,.78); font-weight:650}
+.field > label{font-size:13px; color:rgba(15,23,32,.78); font-weight:650}
 .field input,
 .field select,
 .field textarea{
@@ -478,9 +490,19 @@ body.is-scrolled .header{
 }
 .field textarea{resize:vertical}
 
-.checks{border:0; padding:0; margin:0; display:grid; gap:10px}
-.check{display:flex; gap:10px; align-items:flex-start; color:rgba(15,23,32,.82); font-size:14px}
-.check input{margin-top:3px}
+.checks{border:0; padding:0; margin:0; display:grid; gap:10px; justify-items:stretch}
+.check{
+  width:100%;
+  display:grid;
+  grid-template-columns: 18px 1fr;
+  gap:10px;
+  align-items:start;
+  color:rgba(15,23,32,.82);
+  font-size:14px;
+  line-height:1.35;
+  text-align:left;
+}
+.check input{margin-top:2px; width:16px; height:16px}
 
 .range{display:flex; align-items:center; justify-content:space-between; gap:14px}
 .range input{width:100%}
