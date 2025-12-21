@@ -5,6 +5,21 @@
   const toggle = document.querySelector("[data-nav-toggle]");
   const links = document.querySelector("[data-nav-links]");
 
+  const homeTop = document.querySelector("[data-home-top]");
+  if (homeTop) {
+    homeTop.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      history.replaceState(null, "", "#top");
+
+      // Close mobile nav if open
+      if (links?.classList.contains("is-open")) {
+        links.classList.remove("is-open");
+        toggle?.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
   if (toggle && links) {
     toggle.addEventListener("click", () => {
       const isOpen = links.classList.toggle("is-open");
