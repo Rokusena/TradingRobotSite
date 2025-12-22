@@ -7,8 +7,6 @@
   <title>Furtiluna — Contact</title>
   <link rel="stylesheet" href="./styles.css" />
   <link rel="icon" href="./assets/favicon.png" />
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-<script src="./script.js"></script>
 </head>
 
 <body>
@@ -58,20 +56,8 @@
             <textarea id="message" name="message" rows="6" required></textarea>
           </div>
 
-          <div class="captcha">
-  <div class="captchaRow">
-    <div class="captchaQ">
-      <strong>Captcha:</strong> please verify.
-    </div>
-  </div>
-
-  <div class="turnstileWrap">
-    <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY"></div>
-  </div>
-
-  <!-- Honeypot (bots fill this, humans won't) -->
-  <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
-</div>
+          <!-- Honeypot (bots fill this, humans won't) -->
+          <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
           <div class="formActions">
             <button class="btn btn--primary" type="submit">Send</button>
@@ -79,7 +65,7 @@
           </div>
 
           <p class="finePrint">
-            Replace <code>furtiluna@example.com</code> in <code>contact.html</code> with your real email.
+            Recipient email is configured server-side via <code>CONTACT_TO_EMAIL</code> (Vercel Environment Variables).
           </p>
 
           <p class="formMsg" data-form-msg role="status" aria-live="polite"></p>

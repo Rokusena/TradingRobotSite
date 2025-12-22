@@ -366,8 +366,6 @@
       const phone = contactForm.querySelector("#phone")?.value?.trim() ?? "";
       const message = contactForm.querySelector("#message")?.value?.trim() ?? "";
       const company = contactForm.querySelector('input[name="company"]')?.value?.trim() ?? "";
-      const turnstileToken =
-        contactForm.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() ?? "";
 
       if (!email || !phone || !message) {
         setMsg("Please fill in email, phone, and message.");
@@ -381,7 +379,7 @@
         const resp = await fetch("/api/contact", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, phone, message, company, turnstileToken }),
+          body: JSON.stringify({ email, phone, message, company }),
         });
 
         const data = await resp.json().catch(() => null);
