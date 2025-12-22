@@ -27,9 +27,6 @@ Required:
 - `CONTACT_TO_EMAIL` (recipient; can be a comma-separated list)
 - `CONTACT_FROM_EMAIL` (sender; must be verified in SendGrid)
 
-Optional:
-- `TURNSTILE_SECRET_KEY` (if set, Turnstile is required)
-
 Example values (placeholders):
 - `CONTACT_TO_EMAIL=test-recipient@example.com`
 - `CONTACT_FROM_EMAIL=verified-sender@your-domain.com`
@@ -72,6 +69,8 @@ Local testing (recommended):
 4. Run: `vercel dev`
 5. Open the local site and submit the contact form
 
+Note: testing via VS Code “Live Server” (e.g. `127.0.0.1:5500`) will not run Vercel API Routes, so `/api/contact` won’t work there.
+
 After deployment:
 1. Confirm env vars exist in Vercel for Production
 2. Redeploy
@@ -82,5 +81,4 @@ If email does not arrive:
 - Confirm `CONTACT_FROM_EMAIL` is verified in SendGrid
 - Confirm `SENDGRID_API_KEY` is correct and has Mail Send permission
 - Check Vercel Function logs for `/api/contact`
-- If Turnstile is enabled, ensure your site key/secret pair is correct
 
