@@ -69,6 +69,13 @@
   const wizNext = modal?.querySelector("[data-wiz-next]") ?? null;
   const wizStepLabel = modal?.querySelector("[data-wiz-step]") ?? null;
   let wizIndex = 0;
+  let leadFailReason = "";
+
+  const selectedOptionText = (id) => {
+    const el = form?.querySelector(`#${id}`) ?? null;
+    if (!el || !el.options || typeof el.selectedIndex !== "number") return "";
+    return el.options[el.selectedIndex]?.textContent?.trim() || String(el.value || "").trim();
+  };
 
   const setMsg = (text) => {
     if (msg) msg.textContent = text;
@@ -170,12 +177,21 @@
     const why = form?.querySelector("#why")?.value?.trim() || "";
     const plan = currentSelectionText();
 
+    const expText = selectedOptionText("exp");
+    const incomeText = selectedOptionText("income");
+
     const meta =
+      `Lead capture (not qualified)\n\n` +
+      `Name: ${name}\n` +
+      `Email: ${email}\n` +
+      `Phone: ${phone}\n\n` +
+      `Fail reason: ${leadFailReason || "Not qualified"}\n` +
       `Selected plan: ${plan || ""}\n` +
       `Background: ${bg}\n` +
-      `Experience: ${exp}\n` +
-      `Income bracket: ${income}\n\n` +
-      `Goals:\n${goals}\n\nWhy:\n${why}\n`;
+      `Experience: ${expText || exp}\n` +
+      `Income: ${incomeText || income}\n\n` +
+      `Goals:\n${goals}\n\n` +
+      `Why:\n${why}\n`;
 
     setLeadMsg("Submitting…");
 
@@ -184,7 +200,7 @@
       const resp = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone, message: `Lead capture\n\n${meta}\n`, company: "", turnstileToken: "" }),
+        body: JSON.stringify({ email, phone, message: meta, company: "" }),
       });
 
       const data = await resp.json().catch(() => null);
@@ -278,6 +294,10 @@
     const experienceOk = experience !== "none";
 
     if (!incomeOk || !experienceOk) {
+      const reasons = [];
+      if (!experienceOk) reasons.push("Experience requirement not met");
+      if (!incomeOk) reasons.push("Income requirement not met");
+      leadFailReason = reasons.join("; ");
       showStep("lead");
       setLeadMsg("");
       return;
