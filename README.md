@@ -1,18 +1,18 @@
 # TradingRobotSite
 
-## Contact form email system (Vercel + SendGrid)
+## Contact form email system (Vercel + Resend)
 
 ### Architecture
-Form (contact.html + script.js)  Vercel API Route (/api/contact)  SendGrid API  Inbox
+Form (contact.html + script.js)  Vercel API Route (/api/contact)  Resend API  Inbox
 
 In this repo:
 - Frontend: `contact.html` posts JSON to `/api/contact`.
-- Backend: `api/contact.js` (Vercel Serverless Function) validates input, optionally checks Cloudflare Turnstile, then sends email using SendGrid.
+- Backend: `api/contact.js` (Vercel Serverless Function) validates input and sends email using Resend.
 
 ---
 
-### 1) Install SendGrid SDK
-This project uses `@sendgrid/mail`.
+### 1) Install dependencies
+This project uses the `resend` package.
 
 Install:
 ```bash
@@ -23,9 +23,9 @@ npm install
 
 ### 2) Configure environment variables (secrets)
 Required:
-- `SENDGRID_API_KEY`
+- `RESEND_API_KEY`
 - `CONTACT_TO_EMAIL` (recipient; can be a comma-separated list)
-- `CONTACT_FROM_EMAIL` (sender; must be verified in SendGrid)
+- `CONTACT_FROM_EMAIL` (sender; must be a verified sender/domain in Resend)
 
 Example values (placeholders):
 - `CONTACT_TO_EMAIL=test-recipient@example.com`
@@ -43,10 +43,10 @@ Do not expose secrets in frontend code.
 
 ---
 
-### 4) SendGrid setup (practical)
-1. Create a SendGrid account
-2. Create an API key with **Mail Send** permissions
-3. Verify a sender (Single Sender Verification) and use that as `CONTACT_FROM_EMAIL`
+### 4) Resend setup (practical)
+1. Create a Resend account
+2. Create an API key and store it in `RESEND_API_KEY`
+3. Verify your sending domain or sender and use it as `CONTACT_FROM_EMAIL`
 4. For testing, set `CONTACT_TO_EMAIL` to a temporary inbox (change later anytime)
 
 ---
@@ -78,7 +78,7 @@ After deployment:
 4. Check inbox + spam/junk
 
 If email does not arrive:
-- Confirm `CONTACT_FROM_EMAIL` is verified in SendGrid
-- Confirm `SENDGRID_API_KEY` is correct and has Mail Send permission
+- Confirm `CONTACT_FROM_EMAIL` is verified in Resend
+- Confirm `RESEND_API_KEY` is correct
 - Check Vercel Function logs for `/api/contact`
 

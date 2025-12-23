@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "description": "Static site deployed on Vercel with serverless email API",
   "dependencies": {
-    "@sendgrid/mail": "^8.1.4"
+    "resend": "^4.0.0"
   }
 }
