@@ -50,7 +50,6 @@
   }
 
   // Application modal (Buy -> Questions -> (qualified) Booking)
-  const BOOKING_URL = ""; // TODO: put your Calendly link here (e.g., https://calendly.com/yourname/intro)
   const LEAD_TO_EMAIL = "Hello@furtiluna.com"; // used for mailto fallback
   const modal = document.querySelector("[data-apply-modal]");
   const openBtns = Array.from(document.querySelectorAll("[data-apply-open]"));
@@ -62,8 +61,8 @@
   const stepBooking = document.querySelector('[data-apply-step="booking"]');
   const stepLead = document.querySelector('[data-apply-step="lead"]');
   const backBtns = Array.from(document.querySelectorAll("[data-apply-back]"));
-  const bookLink = document.querySelector("[data-book-link]");
-  const bookEmpty = document.querySelector("[data-book-empty]");
+  const slotSelect = document.querySelector("[data-slot-select]");
+  const slotHint = document.querySelector("[data-slot-hint]");
   const wizPages = form ? Array.from(form.querySelectorAll("[data-apply-page]")) : [];
   const wizBack = modal?.querySelector("[data-wiz-back]") ?? null;
   const wizNext = modal?.querySelector("[data-wiz-next]") ?? null;
@@ -292,16 +291,65 @@
     if (bookMsg) bookMsg.textContent = text;
   };
 
+  const formatSlot = (slot) => {
+    try {
+      const dtf = new Intl.DateTimeFormat("en-GB", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: slot.timezone || "UTC",
+      });
+      return `${dtf.format(new Date(slot.startTime))} (${slot.timezone || "UTC"})`;
+    } catch {
+      return `${new Date(slot.startTime).toISOString()} (${slot.timezone || "UTC"})`;
+    }
+  };
+
+  const loadAvailableSlots = async () => {
+    if (!slotSelect) return;
+    slotSelect.innerHTML = '<option value="" selected disabled>Loading available times…</option>';
+    if (slotHint) slotHint.textContent = "";
+
+    try {
+      const resp = await fetch("/api/availability?limit=50");
+      const data = await resp.json().catch(() => null);
+      const slots = data?.slots || [];
+
+      if (!resp.ok || !data?.ok) throw new Error("availability failed");
+
+      if (!slots.length) {
+        slotSelect.innerHTML = '<option value="" selected disabled>No times available yet</option>';
+        if (slotHint) slotHint.textContent = "Admin can add times at the bottom of the page.";
+        return;
+      }
+
+      const opts = ['<option value="" selected disabled>Select a time</option>'];
+      for (const s of slots) {
+        opts.push(`<option value="${String(s.id)}">${formatSlot(s)}</option>`);
+      }
+      slotSelect.innerHTML = opts.join("");
+      if (slotHint) slotHint.textContent = "Times update automatically as they are booked.";
+    } catch {
+      slotSelect.innerHTML = '<option value="" selected disabled>Could not load available times</option>';
+      if (slotHint) slotHint.textContent = "Please try again later.";
+    }
+  };
+
   bookForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     setBookMsg("");
 
+    const slotId = slotSelect?.value?.trim() ?? "";
     const name = bookForm.querySelector("#bookName")?.value?.trim() ?? "";
     const email = bookForm.querySelector("#bookEmail")?.value?.trim() ?? "";
     const phone = bookForm.querySelector("#bookPhone")?.value?.trim() ?? "";
 
+    if (!slotId) {
+      setBookMsg("Please select an available time.");
+      return;
+    }
+
     if (!name || !email || !phone) {
-      setBookMsg("Please fill in name, email, and phone.");
+      setBookMsg("Please fill in time, name, email, and phone.");
       return;
     }
 
@@ -313,31 +361,40 @@
       failReason: "",
     });
 
+    const applicationJson = collectApplicationAnswers();
+
     const submitBtn = bookForm.querySelector('button[type="submit"]');
     submitBtn && (submitBtn.disabled = true);
     setBookMsg("Submitting…");
 
     try {
-      const resp = await fetch("/api/contact", {
+      const resp = await fetch("/api/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone, message: meta, company: "" }),
+        body: JSON.stringify({
+          slotId,
+          customerName: name,
+          customerEmail: email,
+          customerPhone: phone,
+          applicationText: meta,
+          applicationJson,
+        }),
       });
 
       const data = await resp.json().catch(() => null);
       if (resp.ok && data?.ok) {
-        setBookMsg("Application sent. Now book your meeting.");
+        setBookMsg("Booked! Check your email for Zoom details.");
         bookForm.reset();
+        slotSelect && (slotSelect.selectedIndex = 0);
         submitBtn && (submitBtn.disabled = false);
         return;
       }
     } catch {
-      
+      // ignore
     }
 
-    setBookMsg("Couldn’t send automatically. Please confirm in your email app.");
+    setBookMsg("Booking failed. Please try again later.");
     submitBtn && (submitBtn.disabled = false);
-    mailtoLead({ name, email, phone, meta, subjectText: "Furtiluna qualified application" });
   });
 
   leadForm?.addEventListener("submit", async (e) => {
@@ -395,20 +452,6 @@
     motivation.addEventListener("input", update);
     update();
   }
-
-  // Booking link
-  const setupBookingLink = () => {
-    if (!bookLink || !bookEmpty) return;
-    if (BOOKING_URL) {
-      bookLink.hidden = false;
-      bookLink.setAttribute("href", BOOKING_URL);
-      bookEmpty.hidden = true;
-    } else {
-      bookLink.hidden = true;
-      bookEmpty.hidden = false;
-    }
-  };
-  setupBookingLink();
 
   const validateCurrentPage = () => {
     if (!form || wizPages.length === 0) return true;
@@ -472,7 +515,7 @@
     }
 
     showStep("booking");
-    setupBookingLink();
+    loadAvailableSlots();
     setBookMsg("");
   };
 
@@ -537,6 +580,196 @@
     { passive: true }
   );
   updateScrolled();
+
+  // Admin calendar manager (bottom of site)
+  const adminRoot = document.querySelector("[data-admin-root]");
+  const adminLoginForm = document.querySelector("[data-admin-login]");
+  const adminMsg = document.querySelector("[data-admin-msg]");
+  const adminLogoutBtn = document.querySelector("[data-admin-logout]");
+  const adminPanel = document.querySelector("[data-admin-panel]");
+  const adminAddForm = document.querySelector("[data-admin-addslot]");
+  const adminAddMsg = document.querySelector("[data-admin-add-msg]");
+  const adminSlotsEl = document.querySelector("[data-admin-slots]");
+
+  const setAdminMsg = (text) => {
+    if (adminMsg) adminMsg.textContent = text;
+  };
+  const setAdminAddMsg = (text) => {
+    if (adminAddMsg) adminAddMsg.textContent = text;
+  };
+
+  const authKey = "admin_basic_auth";
+  const getAuthHeader = () => {
+    const stored = sessionStorage.getItem(authKey);
+    if (!stored) return "";
+    return `Basic ${stored}`;
+  };
+
+  const setAuthFromCredentials = (user, pass) => {
+    const raw = `${user}:${pass}`;
+    const b64 = btoa(unescape(encodeURIComponent(raw)));
+    sessionStorage.setItem(authKey, b64);
+  };
+
+  const clearAuth = () => {
+    sessionStorage.removeItem(authKey);
+  };
+
+  const adminFetch = async (url, options = {}) => {
+    const headers = { ...(options.headers || {}) };
+    const auth = getAuthHeader();
+    if (auth) headers.Authorization = auth;
+    return fetch(url, { ...options, headers });
+  };
+
+  const setAdminLoggedIn = (isLoggedIn) => {
+    if (adminPanel) adminPanel.hidden = !isLoggedIn;
+    if (adminLogoutBtn) adminLogoutBtn.hidden = !isLoggedIn;
+  };
+
+  const renderAdminSlots = (slots) => {
+    if (!adminSlotsEl) return;
+    if (!Array.isArray(slots) || slots.length === 0) {
+      adminSlotsEl.innerHTML = '<p class="muted">No upcoming slots.</p>';
+      return;
+    }
+
+    adminSlotsEl.innerHTML = slots
+      .map((s) => {
+        const label = formatSlot(s);
+        const booked = s.bookedAt ? " (booked)" : "";
+        const disabled = s.bookedAt ? "disabled" : "";
+        return (
+          `<div style="display:flex; gap:10px; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line)">` +
+          `<div>${label}${booked}</div>` +
+          `<button class="btn btn--ghost" type="button" data-admin-del="${String(s.id)}" ${disabled}>Delete</button>` +
+          `</div>`
+        );
+      })
+      .join("");
+  };
+
+  const refreshAdminSlots = async () => {
+    if (!adminRoot) return;
+    try {
+      const resp = await adminFetch("/api/admin/slots?limit=200");
+      const data = await resp.json().catch(() => null);
+      if (!resp.ok || !data?.ok) throw new Error("admin slots failed");
+      renderAdminSlots(data.slots || []);
+    } catch {
+      renderAdminSlots([]);
+    }
+  };
+
+  const tryAdminAutoLogin = async () => {
+    if (!adminRoot) return;
+    const auth = getAuthHeader();
+    if (!auth) return;
+
+    try {
+      const resp = await adminFetch("/api/admin/slots?limit=1");
+      if (!resp.ok) throw new Error("not authorized");
+      setAdminLoggedIn(true);
+      setAdminMsg("");
+      await refreshAdminSlots();
+    } catch {
+      clearAuth();
+      setAdminLoggedIn(false);
+    }
+  };
+
+  adminLoginForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    setAdminMsg("");
+
+    const user = adminLoginForm.querySelector("#adminUser")?.value?.trim() ?? "";
+    const pass = adminLoginForm.querySelector("#adminPass")?.value ?? "";
+    if (!user || !pass) {
+      setAdminMsg("Enter username and password.");
+      return;
+    }
+
+    setAuthFromCredentials(user, pass);
+    try {
+      const resp = await adminFetch("/api/admin/slots?limit=1");
+      if (!resp.ok) throw new Error("bad login");
+      setAdminLoggedIn(true);
+      setAdminMsg("Logged in.");
+      await refreshAdminSlots();
+    } catch {
+      clearAuth();
+      setAdminLoggedIn(false);
+      setAdminMsg("Login failed.");
+    }
+  });
+
+  adminLogoutBtn?.addEventListener("click", () => {
+    clearAuth();
+    setAdminLoggedIn(false);
+    setAdminMsg("Logged out.");
+  });
+
+  adminAddForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    setAdminAddMsg("");
+
+    const whenRaw = adminAddForm.querySelector("#slotWhen")?.value ?? "";
+    const durationRaw = adminAddForm.querySelector("#slotDuration")?.value ?? "";
+    const startLocal = whenRaw ? new Date(whenRaw) : null;
+    const durationMinutes = Number.parseInt(String(durationRaw), 10);
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+
+    if (!startLocal || !Number.isFinite(startLocal.getTime())) {
+      setAdminAddMsg("Choose a valid start time.");
+      return;
+    }
+    if (!Number.isFinite(durationMinutes) || durationMinutes < 5 || durationMinutes > 240) {
+      setAdminAddMsg("Duration must be between 5 and 240 minutes.");
+      return;
+    }
+
+    setAdminAddMsg("Adding…");
+    try {
+      const resp = await adminFetch("/api/admin/slots", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          startTime: startLocal.toISOString(),
+          timezone,
+          durationMinutes,
+        }),
+      });
+      const data = await resp.json().catch(() => null);
+      if (!resp.ok || !data?.ok) throw new Error("add failed");
+      setAdminAddMsg("Added.");
+      adminAddForm.reset();
+      await refreshAdminSlots();
+    } catch {
+      setAdminAddMsg("Could not add slot.");
+    }
+  });
+
+  adminSlotsEl?.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-admin-del]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-admin-del") || "";
+    if (!id) return;
+
+    try {
+      const resp = await adminFetch(`/api/admin/slots?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      const data = await resp.json().catch(() => null);
+      if (!resp.ok || !data?.ok) throw new Error("delete failed");
+      await refreshAdminSlots();
+      // Keep booking dropdown current
+      await loadAvailableSlots();
+    } catch {
+      // ignore
+    }
+  });
+
+  tryAdminAutoLogin();
 
   // Contact page: submit to Vercel API (/api/contact)
   const contactForm = document.querySelector("[data-contact-form]");

@@ -389,6 +389,51 @@
           <a href="#top" data-back-to-top>Back to top</a>
         </div>
       </div>
+
+      <div class="container narrow" style="padding-top: 18px;">
+        <details data-admin-root>
+          <summary>Admin: manage calendar</summary>
+          <div style="padding-top: 12px;">
+            <form class="form" data-admin-login>
+              <div class="field">
+                <label for="adminUser">Username</label>
+                <input id="adminUser" type="text" autocomplete="username" required />
+              </div>
+              <div class="field">
+                <label for="adminPass">Password</label>
+                <input id="adminPass" type="password" autocomplete="current-password" required />
+              </div>
+              <div class="form__actions">
+                <button class="btn btn--primary" type="submit">Login</button>
+                <button class="btn btn--ghost" type="button" data-admin-logout hidden>Logout</button>
+              </div>
+              <p class="form__msg" data-admin-msg role="status" aria-live="polite"></p>
+            </form>
+
+            <div data-admin-panel hidden>
+              <form class="form" data-admin-addslot>
+                <div class="field">
+                  <label for="slotWhen">Start time</label>
+                  <input id="slotWhen" type="datetime-local" required />
+                </div>
+                <div class="field">
+                  <label for="slotDuration">Duration (minutes)</label>
+                  <input id="slotDuration" type="number" min="5" max="240" value="30" required />
+                </div>
+                <div class="form__actions">
+                  <button class="btn btn--primary" type="submit">Add available time</button>
+                </div>
+                <p class="form__msg" data-admin-add-msg role="status" aria-live="polite"></p>
+              </form>
+
+              <div class="prose" style="padding-top: 8px;">
+                <strong>Upcoming slots</strong>
+                <div data-admin-slots></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
     </footer>
   </main>
 
@@ -572,12 +617,18 @@
         <!-- Step 2: Booking -->
         <section class="step" data-apply-step="booking" hidden>
           <h3 class="form__title">Book your meeting</h3>
-          <p class="form__note">
-            You’re qualified to book. If you haven’t set a booking calendar yet, add your Calendly/Google booking link in <code>script.js</code>.
-          </p>
+          <p class="form__note">Pick an available time and submit your details to confirm.</p>
 
           <form class="form" data-book-form>
             <p class="form__note">Enter your details so we can review your application before the call.</p>
+
+            <div class="field">
+              <label for="bookSlot">Available times</label>
+              <select id="bookSlot" name="slot" required data-slot-select>
+                <option value="" selected disabled>Loading available times…</option>
+              </select>
+              <div class="finePrint" data-slot-hint></div>
+            </div>
 
             <div class="field">
               <label for="bookName">Name</label>
@@ -602,17 +653,6 @@
 
             <p class="form__msg" data-book-msg role="status" aria-live="polite"></p>
           </form>
-
-          <div class="book" data-book>
-            <a class="btn btn--primary" data-book-link href="#" target="_blank" rel="noreferrer" hidden>
-              Open booking calendar
-            </a>
-            <div class="book__empty" data-book-empty>
-              Booking link is not configured yet.
-              <div class="book__small">Set <code>BOOKING_URL</code> in <code>script.js</code>.</div>
-            </div>
-          </div>
-
         </section>
 
         <!-- Step 3: Lead capture (not qualified for booking yet) -->

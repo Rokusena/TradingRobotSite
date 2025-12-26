@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AvailabilitySlot {
+  id        String   @id @default(cuid())
+  startTime DateTime
+  endTime   DateTime
+  timezone  String
+
+  createdAt DateTime @default(now())
+  bookedAt  DateTime?
+
+  booking   Booking?
+
+  @@index([startTime])
+}
+
+model Booking {
+  id             String           @id @default(cuid())
+  createdAt       DateTime         @default(now())
+
+  slotId          String           @unique
+  slot            AvailabilitySlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+
+  applicationText String
+  applicationJson Json?
+
+  meetingStartTime DateTime
+  meetingTimezone  String
+
+  zoomMeetingId   String?
+  zoomJoinUrl     String?
+  zoomStartUrl    String?
+  zoomPassword    String?
+
+  @@index([meetingStartTime])
+}

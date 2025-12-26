@@ -4,6 +4,11 @@
   "version": "1.0.0",
   "description": "Static site deployed on Vercel with serverless email API",
   "dependencies": {
-    "@sendgrid/mail": "^8.1.6"
+    "@prisma/client": "^6.2.1",
+    "@sendgrid/mail": "^8.1.6",
+    "prisma": "^6.2.1"
+  },
+  "scripts": {
+    "postinstall": "prisma generate"
   }
 }
