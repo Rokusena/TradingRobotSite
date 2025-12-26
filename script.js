@@ -607,7 +607,7 @@
 
   const setAuthFromCredentials = (user, pass) => {
     const raw = `${user}:${pass}`;
-    const b64 = btoa(unescape(encodeURIComponent(raw)));
+    const b64 = btoa(raw);
     sessionStorage.setItem(authKey, b64);
   };
 
@@ -692,14 +692,19 @@
     setAuthFromCredentials(user, pass);
     try {
       const resp = await adminFetch("/api/admin/slots?limit=1");
-      if (!resp.ok) throw new Error("bad login");
+      const data = await resp.json().catch(() => null);
+      if (!resp.ok || !data?.ok) {
+        const serverMsg = data?.error ? String(data.error) : "Request failed";
+        throw new Error(`${resp.status} ${serverMsg}`);
+      }
       setAdminLoggedIn(true);
       setAdminMsg("Logged in.");
       await refreshAdminSlots();
-    } catch {
+    } catch (err) {
       clearAuth();
       setAdminLoggedIn(false);
-      setAdminMsg("Login failed.");
+      const errText = err && err.message ? String(err.message) : "Login failed.";
+      setAdminMsg(`Login failed: ${errText}`);
     }
   });
 

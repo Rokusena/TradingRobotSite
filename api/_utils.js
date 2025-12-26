@@ -29,8 +29,8 @@ const basicAuthCredentials = (req) => {
 
 const requireAdminBasicAuth = (req, res) => {
   const creds = basicAuthCredentials(req);
-  const user = process.env.ADMIN_NAME;
-  const pass = process.env.ADMIN_PASSWORD;
+  const user = String(process.env.ADMIN_NAME || "").trim();
+  const pass = String(process.env.ADMIN_PASSWORD || "").trim();
 
   if (!user || !pass) {
     res.statusCode = 500;
@@ -39,7 +39,9 @@ const requireAdminBasicAuth = (req, res) => {
     return null;
   }
 
-  if (!creds || creds.username !== user || creds.password !== pass) {
+  const username = String(creds?.username || "").trim();
+  const password = String(creds?.password || "");
+  if (!creds || username !== user || password !== pass) {
     res.statusCode = 401;
     res.setHeader("WWW-Authenticate", 'Basic realm="Admin"');
     res.setHeader("Content-Type", "application/json");
