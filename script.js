@@ -61,7 +61,7 @@
   const stepQuestions = document.querySelector('[data-apply-step="questions"]');
   const stepBooking = document.querySelector('[data-apply-step="booking"]');
   const stepLead = document.querySelector('[data-apply-step="lead"]');
-  const backBtn = document.querySelector("[data-apply-back]");
+  const backBtns = Array.from(document.querySelectorAll("[data-apply-back]"));
   const bookLink = document.querySelector("[data-book-link]");
   const bookEmpty = document.querySelector("[data-book-empty]");
   const wizPages = form ? Array.from(form.querySelectorAll("[data-apply-page]")) : [];
@@ -79,6 +79,133 @@
 
   const setMsg = (text) => {
     if (msg) msg.textContent = text;
+  };
+
+  const getCheckedLabels = (name) => {
+    if (!form) return [];
+    const els = Array.from(form.querySelectorAll(`input[type="checkbox"][name="${name}"]:checked`));
+    return els
+      .map((el) => {
+        const label = el.closest("label");
+        return label?.textContent?.replace(/\s+/g, " ")?.trim() || String(el.value || "").trim();
+      })
+      .filter(Boolean);
+  };
+
+  const collectApplicationAnswers = () => {
+    if (!form) {
+      return {
+        plan: currentSelectionText(),
+        background: "",
+        experience: "",
+        approach: "",
+        priorEducation: "",
+        challenges: [],
+        goals: "",
+        motivation: "",
+        timeline: "",
+        income: "",
+        replaceIncome: "",
+        readiness: "",
+        why: "",
+      };
+    }
+
+    const plan = currentSelectionText();
+
+    const background = form.querySelector("#bg")?.value || "";
+    const backgroundText = background ? selectedOptionText("bg") : "";
+
+    const experience = form.querySelector("#exp")?.value || "";
+    const experienceText = experience ? selectedOptionText("exp") : "";
+
+    const income = form.querySelector("#income")?.value || "";
+    const incomeText = income ? selectedOptionText("income") : "";
+
+    const timeline = form.querySelector("#timeline")?.value || "";
+    const timelineText = timeline ? selectedOptionText("timeline") : "";
+
+    const readiness = form.querySelector("#ready")?.value || "";
+    const readinessText = readiness ? selectedOptionText("ready") : "";
+
+    const approach = form.querySelector("#approach")?.value?.trim() || "";
+    const priorEducation = form.querySelector("#education")?.value?.trim() || "";
+    const replaceIncome = form.querySelector("#replace")?.value?.trim() || "";
+    const goals = form.querySelector("#goals")?.value?.trim() || "";
+    const why = form.querySelector("#why")?.value?.trim() || "";
+    const motivation = form.querySelector("#motivation")?.value || "";
+    const challenges = getCheckedLabels("challenges");
+
+    return {
+      plan,
+      background: backgroundText || background,
+      experience: experienceText || experience,
+      approach,
+      priorEducation,
+      challenges,
+      goals,
+      motivation,
+      timeline: timelineText || timeline,
+      income: incomeText || income,
+      replaceIncome,
+      readiness: readinessText || readiness,
+      why,
+    };
+  };
+
+  const buildApplicationMeta = ({ status, name, email, phone, failReason }) => {
+    const a = collectApplicationAnswers();
+    const lines = [];
+
+    lines.push("Furtiluna application submission");
+    lines.push("");
+    lines.push(`Status: ${status || ""}`);
+    if (failReason) lines.push(`Fail reason: ${failReason}`);
+    lines.push("");
+
+    lines.push("--- Applicant ---");
+    lines.push(`Name: ${name || ""}`);
+    lines.push(`Email: ${email || ""}`);
+    lines.push(`Phone: ${phone || ""}`);
+    lines.push("");
+
+    lines.push("--- Selected plan ---");
+    lines.push(a.plan || "");
+    lines.push("");
+
+    lines.push("--- Background & Experience ---");
+    lines.push(`Background: ${a.background || ""}`);
+    lines.push(`Experience: ${a.experience || ""}`);
+    lines.push("");
+
+    lines.push("--- Trading History & Knowledge ---");
+    lines.push(`Approach used: ${a.approach || ""}`);
+    lines.push(`Prior education: ${a.priorEducation || ""}`);
+    lines.push("");
+
+    lines.push("--- Challenges ---");
+    lines.push(a.challenges.length ? a.challenges.join(" | ") : "(none selected)");
+    lines.push("");
+
+    lines.push("--- Goals & Commitment ---");
+    lines.push(`Goals (12–24 months): ${a.goals || ""}`);
+    lines.push(`Motivation (1–10): ${a.motivation || ""}`);
+    lines.push(`Profitability timeline: ${a.timeline || ""}`);
+    lines.push("");
+
+    lines.push("--- Financial Context ---");
+    lines.push(`Monthly income: ${a.income || ""}`);
+    lines.push(`Income to replace: ${a.replaceIncome || ""}`);
+    lines.push("");
+
+    lines.push("--- Investment Readiness ---");
+    lines.push(`Readiness: ${a.readiness || ""}`);
+    lines.push("");
+
+    lines.push("--- Why ---");
+    lines.push(a.why || "");
+
+    return lines.join("\n");
   };
 
   const showStep = (name) => {
@@ -132,9 +259,11 @@
     });
   });
 
-  backBtn?.addEventListener("click", () => {
-    showStep("questions");
-    setMsg("");
+  backBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      showStep("questions");
+      setMsg("");
+    });
   });
 
   // Lead form (for applicants not eligible for booking yet)
@@ -148,13 +277,68 @@
     return planText?.textContent?.replace(/^Selected:\s*/, "")?.trim() || "";
   };
 
-  const mailtoLead = ({ name, email, phone, meta }) => {
-    const subject = encodeURIComponent("Furtiluna application follow-up");
+  const mailtoLead = ({ name, email, phone, meta, subjectText }) => {
+    const subject = encodeURIComponent(subjectText || "Furtiluna application follow-up");
     const body = encodeURIComponent(
       `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\n---\n${meta}\n`
     );
     window.location.href = `mailto:${encodeURIComponent(LEAD_TO_EMAIL)}?subject=${subject}&body=${body}`;
   };
+
+  // Qualified booking step: collect contact info + send full application
+  const bookForm = document.querySelector("[data-book-form]");
+  const bookMsg = document.querySelector("[data-book-msg]");
+  const setBookMsg = (text) => {
+    if (bookMsg) bookMsg.textContent = text;
+  };
+
+  bookForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    setBookMsg("");
+
+    const name = bookForm.querySelector("#bookName")?.value?.trim() ?? "";
+    const email = bookForm.querySelector("#bookEmail")?.value?.trim() ?? "";
+    const phone = bookForm.querySelector("#bookPhone")?.value?.trim() ?? "";
+
+    if (!name || !email || !phone) {
+      setBookMsg("Please fill in name, email, and phone.");
+      return;
+    }
+
+    const meta = buildApplicationMeta({
+      status: "Qualified (booking)",
+      name,
+      email,
+      phone,
+      failReason: "",
+    });
+
+    const submitBtn = bookForm.querySelector('button[type="submit"]');
+    submitBtn && (submitBtn.disabled = true);
+    setBookMsg("Submitting…");
+
+    try {
+      const resp = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, phone, message: meta, company: "" }),
+      });
+
+      const data = await resp.json().catch(() => null);
+      if (resp.ok && data?.ok) {
+        setBookMsg("Application sent. Now book your meeting.");
+        bookForm.reset();
+        submitBtn && (submitBtn.disabled = false);
+        return;
+      }
+    } catch {
+      
+    }
+
+    setBookMsg("Couldn’t send automatically. Please confirm in your email app.");
+    submitBtn && (submitBtn.disabled = false);
+    mailtoLead({ name, email, phone, meta, subjectText: "Furtiluna qualified application" });
+  });
 
   leadForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -169,29 +353,13 @@
       return;
     }
 
-    // Internal-only meta (not shown to user)
-    const bg = form?.querySelector("#bg")?.value || "";
-    const exp = form?.querySelector("#exp")?.value || "";
-    const income = form?.querySelector("#income")?.value || "";
-    const goals = form?.querySelector("#goals")?.value?.trim() || "";
-    const why = form?.querySelector("#why")?.value?.trim() || "";
-    const plan = currentSelectionText();
-
-    const expText = selectedOptionText("exp");
-    const incomeText = selectedOptionText("income");
-
-    const meta =
-      `Lead capture (not qualified)\n\n` +
-      `Name: ${name}\n` +
-      `Email: ${email}\n` +
-      `Phone: ${phone}\n\n` +
-      `Fail reason: ${leadFailReason || "Not qualified"}\n` +
-      `Selected plan: ${plan || ""}\n` +
-      `Background: ${bg}\n` +
-      `Experience: ${expText || exp}\n` +
-      `Income: ${incomeText || income}\n\n` +
-      `Goals:\n${goals}\n\n` +
-      `Why:\n${why}\n`;
+    const meta = buildApplicationMeta({
+      status: "Not qualified (lead)",
+      name,
+      email,
+      phone,
+      failReason: leadFailReason || "Not qualified",
+    });
 
     setLeadMsg("Submitting…");
 
@@ -214,7 +382,7 @@
     }
 
     setLeadMsg("Thanks! Please confirm in your email app.");
-    mailtoLead({ name, email, phone, meta });
+    mailtoLead({ name, email, phone, meta, subjectText: "Furtiluna application follow-up" });
   });
 
   // Update motivation label
@@ -305,6 +473,7 @@
 
     showStep("booking");
     setupBookingLink();
+    setBookMsg("");
   };
 
   wizBack?.addEventListener("click", () => {

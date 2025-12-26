@@ -576,6 +576,33 @@
             You’re qualified to book. If you haven’t set a booking calendar yet, add your Calendly/Google booking link in <code>script.js</code>.
           </p>
 
+          <form class="form" data-book-form>
+            <p class="form__note">Enter your details so we can review your application before the call.</p>
+
+            <div class="field">
+              <label for="bookName">Name</label>
+              <input id="bookName" name="name" type="text" autocomplete="name" required />
+            </div>
+
+            <div class="field">
+              <label for="bookEmail">Email</label>
+              <input id="bookEmail" name="email" type="email" autocomplete="email" required />
+            </div>
+
+            <div class="field">
+              <label for="bookPhone">Phone</label>
+              <input id="bookPhone" name="phone" type="tel" autocomplete="tel" required />
+            </div>
+
+            <div class="form__actions">
+              <button class="btn btn--primary" type="submit">Send application</button>
+              <button class="btn btn--ghost" type="button" data-apply-back>Back</button>
+              <button class="btn btn--ghost" type="button" data-apply-close>Close</button>
+            </div>
+
+            <p class="form__msg" data-book-msg role="status" aria-live="polite"></p>
+          </form>
+
           <div class="book" data-book>
             <a class="btn btn--primary" data-book-link href="#" target="_blank" rel="noreferrer" hidden>
               Open booking calendar
@@ -586,10 +613,6 @@
             </div>
           </div>
 
-          <div class="form__actions">
-            <button class="btn btn--ghost" type="button" data-apply-back>Back</button>
-            <button class="btn btn--ghost" type="button" data-apply-close>Close</button>
-          </div>
         </section>
 
         <!-- Step 3: Lead capture (not qualified for booking yet) -->
