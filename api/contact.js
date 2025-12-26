@@ -1,5 +1,5 @@
 // api/contact.js (Vercel Serverless Function - Node.js)
-const { Resend } = require("resend");
+const sgMail = require("@sendgrid/mail");
 
 const pickHeader = (headers, key) => {
   if (!headers) return "";
@@ -65,19 +65,19 @@ module.exports = async (req, res) => {
       return res.status(400).json({ ok: false, error: "Invalid message" });
     }
 
-    // Email via Resend
-    const resendApiKey = process.env.RESEND_API_KEY;
+    // Email via SendGrid
+    const sendGridApiKey = process.env.SENDGRID_API_KEY;
     const toRaw = process.env.CONTACT_TO_EMAIL;
     const from = process.env.CONTACT_FROM_EMAIL;
 
-    if (!resendApiKey || !toRaw || !from) {
+    if (!sendGridApiKey || !toRaw || !from) {
       return res.status(500).json({
         ok: false,
-        error: "Server not configured (missing RESEND_API_KEY / CONTACT_TO_EMAIL / CONTACT_FROM_EMAIL)",
+        error: "Server not configured (missing SENDGRID_API_KEY / CONTACT_TO_EMAIL / CONTACT_FROM_EMAIL)",
       });
     }
 
-    const resend = new Resend(resendApiKey);
+    sgMail.setApiKey(sendGridApiKey);
 
     const to = String(toRaw)
       .split(",")
@@ -119,7 +119,7 @@ module.exports = async (req, res) => {
       };
       if (cleanEmail) payload.replyTo = cleanEmail;
 
-      await resend.emails.send(payload);
+      await sgMail.send(payload);
     } catch (err) {
       // Avoid leaking provider details to clients
       return res.status(502).json({ ok: false, error: "Email failed" });
